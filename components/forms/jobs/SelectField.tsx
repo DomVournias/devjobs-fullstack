@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/select";
 
 import { SelectListItem } from "@/interfaces";
+import { handleSalaryChecks } from "@/utils/salaries";
 
 interface SelectFieldProps {
   items: SelectListItem[];
   label: string;
   placeholder: string;
   disabled: boolean | undefined;
+  custom: boolean;
   field: {
     onChange: (value: string) => void;
     onBlur: () => void;
@@ -32,6 +34,7 @@ const SelectField = ({
   label,
   placeholder,
   field,
+  custom,
   disabled,
 }: SelectFieldProps) => {
   const selectedValue = field.value !== undefined ? field.value : "";
@@ -53,11 +56,23 @@ const SelectField = ({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
-          {items.map((item) => (
-            <SelectItem value={item.name} key={item.id}>
-              {disabled ? "International" : item.name}
-            </SelectItem>
-          ))}
+          {!custom ? (
+            <>
+              {items.map((item) => (
+                <SelectItem value={item.name} key={item.id}>
+                  {disabled ? "International" : item.name}
+                </SelectItem>
+              ))}
+            </>
+          ) : (
+            <>
+              {items.map((item) => (
+                <SelectItem value={item.name} key={item.id}>
+                  {handleSalaryChecks(item.min, item.max)}
+                </SelectItem>
+              ))}
+            </>
+          )}
         </SelectGroup>
       </SelectContent>
     </Select>

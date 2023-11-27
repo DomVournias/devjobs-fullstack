@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Industry, Location, Position } from "@/interfaces";
+import { Industry, Location, Position, Salary } from "@/interfaces";
 import { jobSchema, jobSchemaType } from "@/schemas/job";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import SelectField from "./SelectField";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@/components/ui/switch";
 
@@ -28,11 +27,12 @@ interface CreateJobFormProps {
     locations: Location[];
     industries: Industry[];
     positions: Position[];
+    salaries: Salary[];
   };
 }
 
 export default function CreateJobForm({
-  data = { locations: [], industries: [], positions: [] },
+  data = { locations: [], industries: [], positions: [], salaries: [] },
 }: CreateJobFormProps) {
   const form = useForm<jobSchemaType>({
     resolver: zodResolver(jobSchema),
@@ -42,6 +42,7 @@ export default function CreateJobForm({
       industry: "",
       position: "",
       location: "",
+      salary: "",
       international: false,
     },
   });
@@ -60,18 +61,10 @@ export default function CreateJobForm({
     }
   }
 
-  // const onSubmit = (values: jobSchemaType) => {
-  //   console.log("Form Values ===>>", values);
-  // };
-
   // const errors = form.formState.errors;
   // console.log("Form Errors ===>>", errors);
 
-  // console.log(data);
-
   const isInternational = form.getValues("international");
-
-  // console.log(isInternational);
 
   return (
     <Form {...form}>
@@ -97,6 +90,27 @@ export default function CreateJobForm({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea rows={5} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="salary"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Salary</FormLabel>
+              <FormControl>
+                <SelectField
+                  items={data.salaries}
+                  label="Salary range"
+                  placeholder="Select a range"
+                  field={field}
+                  disabled={false}
+                  custom={true}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -132,6 +146,7 @@ export default function CreateJobForm({
                   placeholder="Select a location"
                   field={field}
                   disabled={isInternational}
+                  custom={false}
                 />
               </FormControl>
               <FormMessage />
@@ -152,6 +167,7 @@ export default function CreateJobForm({
                   placeholder="Select an industry"
                   field={field}
                   disabled={false}
+                  custom={false}
                 />
               </FormControl>
               <FormMessage />
@@ -171,6 +187,7 @@ export default function CreateJobForm({
                   placeholder="Select a position"
                   field={field}
                   disabled={false}
+                  custom={false}
                 />
               </FormControl>
               <FormMessage />
