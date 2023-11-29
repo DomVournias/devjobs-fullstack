@@ -1,79 +1,90 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
+import {
+  createUserByRole,
+  existsByEmailAndUsername,
+  findUserByEmail,
+  findUserByUsername,
+} from "./roles";
+import {
+  signUpCompanySchemaType,
+  signUpDeveloperSchemaType,
+} from "@/schemas/auth";
+
 import { hash } from "bcrypt";
-import prisma from "@/lib/prisma";
-import { signUpSchemaType } from "@/schemas/auth";
 
-export async function SignUp(data: signUpSchemaType) {
+export async function SignUp(
+  data: signUpDeveloperSchemaType | signUpCompanySchemaType
+) {
   try {
-    // check if email already exists
-    const existingUserByEmail = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
+    const userRole = data.role;
 
-    if (existingUserByEmail) {
+    // check if email already exists
+    const userExistsByEmail = await findUserByEmail("both", data.email);
+
+    if (userExistsByEmail) {
       return {
         user: null,
-        message: "Email is already in use by another user",
+        message: `Email is already in use by another ${userRole}`,
         status: 409,
       };
     }
 
-    const { role, email, password, firstName, lastName } = data;
+    const userExistsByUsername = await findUserByUsername(
+      userRole,
+      data.username
+    );
 
-    const hashedPassword = await hash(password, 10);
-
-    let username;
-
-    const usernameByEmail = `@${email.split("@")[0]}`;
-
-    const existingUserByUsername = await prisma.user.findUnique({
-      where: { username: usernameByEmail },
-    });
-
-    if (existingUserByUsername) {
-      // If the username already exists, add an incrementing number
-      let counter = 1;
-      while (true) {
-        const incrementedUsername = `${usernameByEmail}${counter}`;
-        const userWithIncrementedUsername = await prisma.user.findUnique({
-          where: {
-            username: incrementedUsername,
-          },
-        });
-
-        if (!userWithIncrementedUsername) {
-          // Found a unique incremented username
-          username = incrementedUsername;
-          break;
-        }
-
-        counter++;
-      }
-    } else {
-      // If the username doesn't exist, use the original username
-      username = usernameByEmail;
+    if (userExistsByUsername) {
+      return {
+        user: null,
+        message: `Username is already in use by another ${userRole}`,
+        status: 409,
+      };
     }
 
-    const newUser = await prisma.user.create({
-      data: {
+    // Initialize userData
+    let userData;
+
+    if (userRole === "developer") {
+      const { role, email, username, password, firstName, lastName } =
+        data as signUpDeveloperSchemaType;
+
+      const hashedPassword = await hash(password, 10);
+
+      userData = {
         email,
         role,
         firstName,
         lastName,
         username,
         password: hashedPassword,
-      },
-    });
+        profileCompletion: 0,
+      };
+    } else if (userRole === "company") {
+      const { role, email, username, password, name } =
+        data as signUpCompanySchemaType;
 
-    const { password: newUserPassword, ...rest } = newUser;
+      const hashedPassword = await hash(password, 10);
 
-    return {
-      user: rest,
-      message: "Successful registration!",
-      status: 201,
-    };
+      userData = {
+        email,
+        role,
+        username,
+        password: hashedPassword,
+        name,
+      };
+    } else {
+      // Handle other roles if necessary
+      return {
+        message: "Invalid user role",
+        status: 400,
+      };
+    }
+
+    const newUser = await createUserByRole(userRole, userData);
+
+    return newUser;
   } catch (error) {
     return {
       message: "Something went wrong!",

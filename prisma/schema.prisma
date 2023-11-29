@@ -12,107 +12,93 @@ datasource db {
 
 // Users
 
-model User {
-  id           String    @id @default(cuid())
-  role         String
-  email        String    @unique
-  username     String    @unique
-  password     String
-  firstName    String
-  lastName     String
-  company      String?
-  picture      String?
-  description  String?
-  website      String?
-  skills       Skill[]
-  locationId   Int?
-  location     Location? @relation(fields: [locationId], references: [id])
-  jobs         Job[]
-  level        String?
-  level_rel Level?    @relation(fields: [level], references: [name])
-  chats        Chat[]
-  salary       String?
-  salary_rel   Salary?   @relation(fields: [salary], references: [name])
-  industryId   Int?
-  industry     Industry? @relation(fields: [industryId], references: [id])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-}
-
 model Developer {
-  id           String    @id @default(cuid())
-  role         String
-  email        String    @unique
-  username     String    @unique
-  password     String
-  firstName    String
-  lastName     String
-  picture      String?
-  website      String?
-  twitter      String?
-  discord      String?
-  github       String?
-  instagram    String?
-  jobs         Job[]
-  locationId   Int?
-  location     Location? @relation(fields: [locationId], references: [id])
-  timezoneId String?
-  timezone     Timezone? @relation(fields: [timezoneId], references: [id])
-  hoursId Int?
-  hours Hours? @relation(fields: [hoursId], references: [id])
-  level        String?
-  level_rel Level?    @relation(fields: [level], references: [name])
-  chats        Chat[]
-  salary      Int?
-  rate        Int?
-  availability String?
-  industryId   Int?
-  industry     Industry? @relation(fields: [industryId], references: [id])
+  id                String     @id @default(cuid())
+  role              String
+  email             String     @unique
+  username          String     @unique
+  password          String
+  firstName         String
+  lastName          String
+  picture           String?
+  website           String?
+  twitter           String?
+  discord           String?
+  github            String?
+  instagram         String?
+  chats             Chat[]
+  jobs              Job[]
+  stacks            Stack[]
+  skills            Skill[]
+  tags              Tag[]
+  rate              Rate?      @relation(fields: [rateId], references: [id])
+  rateId            String?
+  salary            Salary?    @relation(fields: [salaryId], references: [id])
+  salaryId          String?
+  shift             Shift?     @relation(fields: [shiftId], references: [id])
+  shiftId           String?
+  position          Position?  @relation(fields: [positionId], references: [id])
+  positionId        String?
+  location          Location?  @relation(fields: [locationId], references: [id])
+  locationId        String?
+  timezone          Timezone?  @relation(fields: [timezoneId], references: [id])
+  timezoneId        String?
+  hours             Hours?     @relation(fields: [hoursId], references: [id])
+  hoursId           String?
+  seniority         Seniority? @relation(fields: [seniorityId], references: [id])
+  seniorityId       String?
+  industry          Industry?  @relation(fields: [industryId], references: [id])
+  industryId        String?
   profileCompletion Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Company {
-  id           String    @id @default(cuid())
-  role         String
-  email        String    @unique
-  username     String    @unique
-  password     String
-  name         String
-  tagline      String?
-  about        String?
-  website      String?
-  twitter      String?
-  discord      String?
-  github       String?
-  instagram    String?
-  logo         String?
-  jobs         Job[]
-  managers     Manager[]
-  locationId   Int?
-  location     Location? @relation(fields: [locationId], references: [id])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id         String    @id @default(cuid())
+  role       String
+  email      String    @unique
+  username   String    @unique
+  password   String
+  name       String
+  tagline    String?
+  about      String?
+  website    String?
+  twitter    String?
+  discord    String?
+  github     String?
+  instagram  String?
+  logo       String?
+  jobs       Job[]
+  chats      Chat[]
+  managers   Manager[]
+  location   Location? @relation(fields: [locationId], references: [name])
+  locationId String?
+  industry   Industry? @relation(fields: [industryId], references: [name])
+  industryId String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Manager {
-  id           String    @id @default(cuid())
-  role         String
-  email        String    @unique
-  username     String    @unique
-  password     String
-  firstName    String
-  lastName     String
-  picture      String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  role      String
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String
+  lastName  String
+  picture   String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Jobs
 
 model Job {
-  id             String    @id @default(cuid())
+  id             String      @id @default(cuid())
   title          String?
   description    String?
   employmentType String?
@@ -120,87 +106,141 @@ model Job {
   remote         Boolean?
   requirements   String[]
   contactEmail   String?
+  applicants     Developer[]
+  company        Company?    @relation(fields: [companyId], references: [id])
+  companyId      String?
   chats          Chat[]
+  stacks         Stack[]
   skills         Skill[]
-  level          String?
-  level_rel      Level?    @relation(fields: [level], references: [name])
-  salary         String?
-  salary_rel     Salary?   @relation(fields: [salary], references: [name])
-  industry       String?
-  industry_rel   Industry? @relation(fields: [industry], references: [name])
-  position       String?
-  position_rel   Position? @relation(fields: [position], references: [name])
-  user           String?
-  user_rel       User?     @relation(fields: [user], references: [id])
-  location       String?
-  location_rel   Location? @relation(fields: [location], references: [name])
   tags           Tag[]
-  // users          User[]
-  published      Boolean?  @default(false)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  rate           Rate?       @relation(fields: [rateId], references: [id])
+  rateId         String?
+  salary         Salary?     @relation(fields: [salaryId], references: [id])
+  salaryId       String?
+  shift          Shift?      @relation(fields: [shiftId], references: [id])
+  shiftId        String?
+  position       Position?   @relation(fields: [positionId], references: [id])
+  positionId     String?
+  location       Location?   @relation(fields: [locationId], references: [id])
+  locationId     String?
+  timezone       Timezone?   @relation(fields: [timezoneId], references: [id])
+  timezoneId     String?
+  hours          Hours?      @relation(fields: [hoursId], references: [id])
+  hoursId        String?
+  seniority      Seniority?  @relation(fields: [seniorityId], references: [id])
+  seniorityId    String?
+  industry       Industry?   @relation(fields: [industryId], references: [id])
+  industryId     String?
+  published      Boolean?    @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
 model Location {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  users User[]
-  jobs  Job[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
+  companies  Company[]
 }
 
 model Skill {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  jobs  Job[]
-  users User[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Stack {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
 }
 
 model Tag {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  jobs Job[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
 }
 
 model Position {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  jobs Job[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
 }
 
 model Industry {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  jobs  Job[]
-  users User[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
+  companies  Company[]
 }
 
 model Salary {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  min   Int
-  max   Int
-  jobs  Job[]
-  users User[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  min        Int
+  max        Int
+  jobs       Job[]
+  developers Developer[]
 }
 
-model Level {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  jobs  Job[]
-  users User[]
+model Seniority {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Rate {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  value      Int
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Hours {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  range      String
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Shift {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  from       String
+  to         String
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Timezone {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  value      Int
+  jobs       Job[]
+  developers Developer[]
 }
 
 // Chat
 
 model Chat {
-  id        String    @id @default(cuid())
-  name      String
-  job       String?
-  job_rel   Job?      @relation(fields: [job], references: [id])
-  users     User[]
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String      @id @unique @default(cuid())
+  name       String
+  job        String?
+  job_rel    Job?        @relation(fields: [job], references: [id])
+  messages   Message[]
+  developers Developer[]
+  companies  Company[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model Message {
