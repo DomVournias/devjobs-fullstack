@@ -12,8 +12,8 @@ async function Header() {
   const session = await getServerSession(authOptions);
 
   return (
-    <header className="border-b border-border px-[1rem]">
-      <div className="flex justify-between items-center max-w-screen-2xl m-auto h-16 ">
+    <header className="border-b border-border px-8 h-16 items-center justify-center">
+      <div className="flex justify-between items-center m-auto h-16 ">
         <Logo />
         <nav className="flex items-center gap-6">
           <ThemeSwitcher />

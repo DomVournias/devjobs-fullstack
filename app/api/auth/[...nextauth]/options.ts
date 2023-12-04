@@ -45,9 +45,19 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const existingUser = await prisma.user.findUnique({
+        const existingDeveloper = await prisma.developer.findUnique({
           where: { email: credentials?.email },
         });
+
+        const existingCompany = await prisma.company.findUnique({
+          where: { email: credentials?.email },
+        });
+
+        if (!existingDeveloper && !existingCompany) {
+          return null;
+        }
+
+        const existingUser = existingDeveloper || existingCompany;
 
         if (!existingUser) {
           return null;
@@ -73,10 +83,10 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log("-----");
-      console.log("JWT-TOKEN", token);
-      console.log("JWT-USER", user);
-      console.log("-----");
+      // console.log("-----");
+      // console.log("JWT-TOKEN", token);
+      // console.log("JWT-USER", user);
+      // console.log("-----");
 
       if (user) {
         return {
@@ -89,8 +99,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log("SESSION-SESSION", session);
-      console.log("SESSION-TOKEN", token);
+      // console.log("SESSION-SESSION", session);
+      // console.log("SESSION-TOKEN", token);
       return {
         ...session,
         user: {

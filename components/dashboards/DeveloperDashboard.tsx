@@ -1,9 +1,13 @@
+import type { Company, Developer } from "@prisma/client";
+
 import React from "react";
 
+// interface DeveloperDashboardProps {
+//   developer: Developer;
+// }
+
 export default function DeveloperDashboard() {
-  return (
-    <div>
-      <h2>Developer dashboard</h2>
-    </div>
-  );
+  // console.log("Dashboard developer:", developer);
+
+  return <div>{/* <code>{JSON.stringify(developer)}</code> */}</div>;
 }

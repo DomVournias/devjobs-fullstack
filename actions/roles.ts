@@ -1,4 +1,25 @@
+import type { Company, Developer } from "@prisma/client";
+
+import { companyStore } from "@/stores/company.store";
 import prisma from "@/lib/prisma";
+
+export const getUserById = async (userRole: string, userId: string) => {
+  switch (userRole) {
+    case "developer":
+      const developer = await prisma.developer.findUnique({
+        where: { id: userId },
+      });
+      return developer as Developer;
+    case "company":
+      const companyData = (await prisma.company.findUnique({
+        where: { id: userId },
+      })) as Company;
+
+      return companyData;
+    default:
+      return null;
+  }
+};
 
 export const findUserByEmail = async (userRole: string, userEmail: string) => {
   switch (userRole) {
@@ -20,6 +41,7 @@ export const findUserByEmail = async (userRole: string, userEmail: string) => {
       return developer || company;
     default:
       return {
+        user: null,
         message: "Invalid user role!",
         status: 404,
       };

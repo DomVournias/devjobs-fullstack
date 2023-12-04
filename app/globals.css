@@ -49,11 +49,26 @@
   }
 }
 
+.recharts-cartesian-axis-line,
+.recharts-cartesian-axis-tick-line {
+  display: none !important;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .container-full {
+    @apply w-full;
+  }
+
+  .container-small {
+    @apply max-w-screen-2xl pt-10 pb-20 px-24 m-auto;
   }
 }
