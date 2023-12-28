@@ -21,6 +21,8 @@ model Developer {
   firstName         String
   lastName          String
   picture           String?
+  about             String?
+  excerpt           String?
   website           String?
   twitter           String?
   discord           String?
@@ -28,27 +30,28 @@ model Developer {
   instagram         String?
   chats             Chat[]
   jobs              Job[]
-  stacks            Stack[]
   skills            Skill[]
-  tags              Tag[]
+  types             Type[]
   rate              Rate?      @relation(fields: [rateId], references: [id])
-  rateId            String?
-  salary            Salary?    @relation(fields: [salaryId], references: [id])
-  salaryId          String?
+  rateId            Int?
+  minSalary         MinSalary? @relation(fields: [minSalaryId], references: [id])
+  minSalaryId       Int?
+  maxSalary         MaxSalary? @relation(fields: [maxSalaryId], references: [id])
+  maxSalaryId       Int?
   shift             Shift?     @relation(fields: [shiftId], references: [id])
-  shiftId           String?
+  shiftId           Int?
   position          Position?  @relation(fields: [positionId], references: [id])
-  positionId        String?
+  positionId        Int?
   location          Location?  @relation(fields: [locationId], references: [id])
-  locationId        String?
+  locationId        Int?
   timezone          Timezone?  @relation(fields: [timezoneId], references: [id])
-  timezoneId        String?
+  timezoneId        Int?
   hours             Hours?     @relation(fields: [hoursId], references: [id])
-  hoursId           String?
+  hoursId           Int?
   seniority         Seniority? @relation(fields: [seniorityId], references: [id])
-  seniorityId       String?
+  seniorityId       Int?
   industry          Industry?  @relation(fields: [industryId], references: [id])
-  industryId        String?
+  industryId        Int?
   profileCompletion Int
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
@@ -63,12 +66,17 @@ model Company {
   name       String
   tagline    String?
   about      String?
+  excerpt    String?
   website    String?
   twitter    String?
   discord    String?
   github     String?
   instagram  String?
+  facebook   String?
+  linkedin   String?
   logo       String?
+  size       Size?     @relation(fields: [sizeId], references: [id])
+  sizeId     Int?
   jobs       Job[]
   chats      Chat[]
   managers   Manager[]
@@ -91,6 +99,7 @@ model Manager {
   picture   String?
   company   Company? @relation(fields: [companyId], references: [id])
   companyId String?
+  jobs      Job[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -98,7 +107,7 @@ model Manager {
 // Jobs
 
 model Job {
-  id             String      @id @default(cuid())
+  id             String       @id @default(cuid())
   title          String?
   description    String?
   employmentType String?
@@ -107,37 +116,64 @@ model Job {
   requirements   String[]
   contactEmail   String?
   applicants     Developer[]
-  company        Company?    @relation(fields: [companyId], references: [id])
+  company        Company?     @relation(fields: [companyId], references: [id])
   companyId      String?
+  manager        Manager?     @relation(fields: [managerId], references: [id])
+  managerId      String?
   chats          Chat[]
-  stacks         Stack[]
   skills         Skill[]
-  tags           Tag[]
-  rate           Rate?       @relation(fields: [rateId], references: [id])
-  rateId         String?
-  salary         Salary?     @relation(fields: [salaryId], references: [id])
-  salaryId       String?
-  shift          Shift?      @relation(fields: [shiftId], references: [id])
-  shiftId        String?
-  position       Position?   @relation(fields: [positionId], references: [id])
-  positionId     String?
-  location       Location?   @relation(fields: [locationId], references: [id])
-  locationId     String?
-  timezone       Timezone?   @relation(fields: [timezoneId], references: [id])
-  timezoneId     String?
-  hours          Hours?      @relation(fields: [hoursId], references: [id])
-  hoursId        String?
-  seniority      Seniority?  @relation(fields: [seniorityId], references: [id])
-  seniorityId    String?
-  industry       Industry?   @relation(fields: [industryId], references: [id])
-  industryId     String?
-  published      Boolean?    @default(false)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  type           Type?        @relation(fields: [typeId], references: [id])
+  typeId         Int?
+  rate           Rate?        @relation(fields: [rateId], references: [id])
+  rateId         Int?
+  minSalary      MinSalary?   @relation(fields: [minSalaryId], references: [id])
+  minSalaryId    Int?
+  maxSalary      MaxSalary?   @relation(fields: [maxSalaryId], references: [id])
+  maxSalaryId    Int?
+  shift          Shift?       @relation(fields: [shiftId], references: [id])
+  shiftId        Int?
+  position       Position?    @relation(fields: [positionId], references: [id])
+  positionId     Int?
+  location       Location?    @relation(fields: [locationId], references: [id])
+  locationId     Int?
+  timezone       Timezone?    @relation(fields: [timezoneId], references: [id])
+  timezoneId     Int?
+  hours          Hours?       @relation(fields: [hoursId], references: [id])
+  hoursId        Int?
+  seniority      Seniority?   @relation(fields: [seniorityId], references: [id])
+  seniorityId    Int?
+  industry       Industry?    @relation(fields: [industryId], references: [id])
+  industryId     Int?
+  impressions    Impression[]
+  status         JobStatus?   @relation(fields: [statusId], references: [id])
+  statusId       Int?
+  published      Boolean?     @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Impression {
+  id    Int      @id @default(autoincrement())
+  date  DateTime @default(now())
+  job   Job      @relation(fields: [jobId], references: [id])
+  jobId String
+}
+
+model JobStatus {
+  id   Int    @id @default(autoincrement())
+  name String
+  jobs Job[]
+}
+
+model Type {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
 }
 
 model Location {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
   developers Developer[]
@@ -145,59 +181,58 @@ model Location {
 }
 
 model Skill {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
   developers Developer[]
 }
 
-model Stack {
-  id         String      @id @default(cuid())
-  name       String      @unique
-  jobs       Job[]
-  developers Developer[]
-}
-
-model Tag {
-  id         String      @id @default(cuid())
-  name       String      @unique
-  jobs       Job[]
-  developers Developer[]
+model Size {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  companies Company[]
 }
 
 model Position {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
   developers Developer[]
 }
 
 model Industry {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
   developers Developer[]
   companies  Company[]
 }
 
-model Salary {
-  id         String      @id @default(cuid())
-  name       String      @unique
-  min        Int
-  max        Int
+model MinSalary {
+  id         Int         @id @default(autoincrement())
+  name       String
+  value      Int
+  jobs       Job[]
+  developers Developer[]
+}
+
+model MaxSalary {
+  id         Int         @id @default(autoincrement())
+  name       String
+  value      Int
   jobs       Job[]
   developers Developer[]
 }
 
 model Seniority {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
   developers Developer[]
 }
 
 model Rate {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   value      Int
   jobs       Job[]
@@ -205,7 +240,7 @@ model Rate {
 }
 
 model Hours {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   range      String
   jobs       Job[]
@@ -213,7 +248,7 @@ model Hours {
 }
 
 model Shift {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   from       String
   to         String
@@ -222,7 +257,7 @@ model Shift {
 }
 
 model Timezone {
-  id         String      @id @default(cuid())
+  id         Int         @id @default(autoincrement())
   name       String      @unique
   value      Int
   jobs       Job[]
