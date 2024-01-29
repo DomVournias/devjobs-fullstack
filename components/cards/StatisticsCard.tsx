@@ -1,4 +1,10 @@
-import { FileDown, Layers, MoreHorizontal, WalletCards } from "lucide-react";
+import {
+  Eye,
+  FileDown,
+  Layers,
+  MoreHorizontal,
+  WalletCards,
+} from "lucide-react";
 
 import { Button } from "../ui/button";
 import React from "react";
@@ -21,9 +27,13 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({
     <div className="bg-muted w-full pt-6 pb-6 px-5 rounded-lg">
       <div className="flex items-center justify-between">
         <div className="p-2 rounded-full bg-accent-foreground">
-          {type === "applications" ? (
+          {type === "applications" && (
             <Layers width={22} height={22} className="text-accent" />
-          ) : (
+          )}
+          {type === "views" && (
+            <Eye width={22} height={22} className="text-accent" />
+          )}
+          {type === "posts" && (
             <WalletCards width={22} height={22} className="text-accent" />
           )}
         </div>
