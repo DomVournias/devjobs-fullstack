@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Ref } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,7 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { arraySchema, objectSchema, objectSchemaType } from "@/schemas/job";
 
+import { Ref } from "react-hook-form";
 import { SelectListItem } from "@/interfaces";
 import { handleSalaryChecks } from "@/utils/salaries";
 
@@ -18,14 +20,18 @@ interface SelectFieldProps {
   items: SelectListItem[];
   label: string;
   placeholder: string;
+  range?: boolean | undefined;
   disabled: boolean | undefined;
   custom: boolean;
+  disabledName?: string | undefined;
   field: {
     onChange: (value: string) => void;
     onBlur: () => void;
-    value: string | undefined;
+    id?: number;
+    object?: object;
+    value: object | undefined;
     name: string;
-    ref: Ref<any>;
+    ref: Ref;
   };
 }
 
@@ -34,23 +40,28 @@ const SelectField = ({
   label,
   placeholder,
   field,
+  range,
   custom,
   disabled,
+  disabledName,
 }: SelectFieldProps) => {
-  const selectedValue = field.value !== undefined ? field.value : "";
-  const displayValue = disabled ? "International" : selectedValue;
+  // const [minValue, setMinValue] = useState<number>(0);
 
   const handleFieldValue = (value: string) => {
-    field.onChange(value);
+    const parsedObject = JSON.parse(value);
+
+    // if (!isMaxSalaries) {
+    //   setMinValue(parsedObject.value);
+    // }
+    // console.log(field.name, `==>`, parsedObject);
+    field.onChange(parsedObject);
   };
 
+  // console.log(minValue);
+
   return (
-    <Select
-      onValueChange={handleFieldValue}
-      defaultValue={displayValue}
-      disabled={disabled}
-    >
-      <SelectTrigger className="w-[180px]">
+    <Select onValueChange={handleFieldValue} disabled={disabled}>
+      <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
@@ -59,16 +70,25 @@ const SelectField = ({
           {!custom ? (
             <>
               {items.map((item) => (
-                <SelectItem value={item.name} key={item.id}>
-                  {disabled ? "International" : item.name}
+                <SelectItem
+                  key={item.id}
+                  value={JSON.stringify(item)}
+                  textValue={range ? item.range : item.name}
+                >
+                  {disabled ? disabledName : item.name}
                 </SelectItem>
               ))}
             </>
           ) : (
             <>
               {items.map((item) => (
-                <SelectItem value={item.name} key={item.id}>
-                  {handleSalaryChecks(item.min, item.max)}
+                <SelectItem
+                  key={item.id}
+                  value={JSON.stringify(item)}
+                  textValue={range ? item.range : item.name}
+                  // disabled={isMaxSalaries && item.value < minValue}
+                >
+                  {range ? item.range : item.name}
                 </SelectItem>
               ))}
             </>
