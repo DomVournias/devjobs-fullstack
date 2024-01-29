@@ -59,7 +59,7 @@ const JobsTable = async () => {
               {job.applicants.length}
             </TableCell>
             <TableCell className="text-right w-1/12 px-0">
-              <Badge variant="outline">{job.status.name}</Badge>
+              <Badge variant="outline">{job?.status?.name}</Badge>
             </TableCell>
           </TableRow>
         ))}
