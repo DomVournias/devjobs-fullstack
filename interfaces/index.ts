@@ -2,6 +2,7 @@ export interface SelectListItem {
   id: number;
   name: string;
   value?: number;
+  range?: string;
 }
 
 export interface RadioGroupPropTypes {
