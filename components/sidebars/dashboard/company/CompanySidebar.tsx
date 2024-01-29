@@ -12,18 +12,16 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Company } from "@prisma/client";
-import CompanyDashboard from "@/components/dashboards/CompanyDashboard";
+import CompanyDashboard from "@/components/dashboards/company/CompanyDashboard";
+import Link from "next/link";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { companyMenu } from "./company.menu";
 import { companyStore } from "@/stores/company.store";
+import { fetchUser } from "@/actions/user";
 
-interface CompanySidebarProps {
-  company: Company;
-}
-
-const CompanySidebar: React.FC<CompanySidebarProps> = ({ company }) => {
-  console.log("sidebard", company);
+const CompanySidebar = async () => {
+  const { company } = await fetchUser();
 
   return (
     <aside className="h-[calc(100vh-4rem)] sticky  border-border border-b border-r max-w-screen-sm w-[320px] px-8 py-8 ">
@@ -35,13 +33,17 @@ const CompanySidebar: React.FC<CompanySidebarProps> = ({ company }) => {
                 <Button
                   variant="ghost"
                   className="flex items-center gap-2 w-full justify-start p-0 hover:bg-transparent opacity-90 hover:opacity-100 transition-all"
+                  asChild
                 >
-                  {item.icon}
-                  <span className="text-base">{item.name}</span>
+                  <Link href={item.url}>
+                    {item.icon}
+                    <span className="text-base">{item.name}</span>
+                  </Link>
                 </Button>
               </li>
             ))}
           </ul>
+
           <div className="mx-[-2rem] pt-10">
             <Separator className="my-2" />
             <div className="px-8">
@@ -59,7 +61,6 @@ const CompanySidebar: React.FC<CompanySidebarProps> = ({ company }) => {
                 </div>
               </Button>
             </div>
-
             <Separator className="my-2" />
           </div>
         </nav>
@@ -74,6 +75,7 @@ const CompanySidebar: React.FC<CompanySidebarProps> = ({ company }) => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
+
               <div className="flex flex-col items-start">
                 <h5 className="text-sm">{company.name}</h5>
                 <p className="text-xs opacity-40">{company.email}</p>
