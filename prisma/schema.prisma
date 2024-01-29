@@ -33,11 +33,15 @@ model Developer {
   skills            Skill[]
   types             Type[]
   rate              Rate?      @relation(fields: [rateId], references: [id])
-  rateId            Int?
+  rateId            String?
+  budget           Budget?        @relation(fields: [budgetId], references: [id])
+  budgetId         Int?
   minSalary         MinSalary? @relation(fields: [minSalaryId], references: [id])
   minSalaryId       Int?
   maxSalary         MaxSalary? @relation(fields: [maxSalaryId], references: [id])
   maxSalaryId       Int?
+  availability              Availability?      @relation(fields: [availabilityId], references: [id])
+  availabilityId            Int?
   shift             Shift?     @relation(fields: [shiftId], references: [id])
   shiftId           Int?
   position          Position?  @relation(fields: [positionId], references: [id])
@@ -124,12 +128,16 @@ model Job {
   skills         Skill[]
   type           Type?        @relation(fields: [typeId], references: [id])
   typeId         Int?
+  budget           Budget?        @relation(fields: [budgetId], references: [id])
+  budgetId         Int?
   rate           Rate?        @relation(fields: [rateId], references: [id])
-  rateId         Int?
+  rateId         String?
   minSalary      MinSalary?   @relation(fields: [minSalaryId], references: [id])
   minSalaryId    Int?
   maxSalary      MaxSalary?   @relation(fields: [maxSalaryId], references: [id])
   maxSalaryId    Int?
+  availability              Availability?      @relation(fields: [availabilityId], references: [id])
+  availabilityId            Int?
   shift          Shift?       @relation(fields: [shiftId], references: [id])
   shiftId        Int?
   position       Position?    @relation(fields: [positionId], references: [id])
@@ -166,6 +174,13 @@ model JobStatus {
 }
 
 model Type {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  jobs       Job[]
+  developers Developer[]
+}
+
+model Budget {
   id         Int         @id @default(autoincrement())
   name       String      @unique
   jobs       Job[]
@@ -232,12 +247,16 @@ model Seniority {
 }
 
 model Rate {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
-  value      Int
+  id         String       @id @default(cuid())
+  name       String      
+  fixed      Int
+  from       Int
+  to         Int
+  type       String
   jobs       Job[]
   developers Developer[]
 }
+
 
 model Hours {
   id         Int         @id @default(autoincrement())
@@ -246,6 +265,16 @@ model Hours {
   jobs       Job[]
   developers Developer[]
 }
+
+model Availability {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  range      String
+  jobs       Job[]
+  developers Developer[]
+}
+
+
 
 model Shift {
   id         Int         @id @default(autoincrement())
