@@ -1,19 +1,22 @@
-import type { Company, Developer } from "@prisma/client";
+import type { Company, Developer, Prisma } from "@prisma/client";
 
 import { companyStore } from "@/stores/company.store";
 import prisma from "@/lib/prisma";
 
-export const getUserById = async (userRole: string, userId: string) => {
+export const getUserById = async (
+  userRole: string,
+  userId: string
+): Promise<Developer | Company | null> => {
   switch (userRole) {
     case "developer":
       const developer = await prisma.developer.findUnique({
         where: { id: userId },
       });
-      return developer as Developer;
+      return developer;
     case "company":
-      const companyData = (await prisma.company.findUnique({
+      const companyData = await prisma.company.findUnique({
         where: { id: userId },
-      })) as Company;
+      });
 
       return companyData;
     default:
@@ -27,6 +30,7 @@ export const findUserByEmail = async (userRole: string, userEmail: string) => {
       return await prisma.developer.findUnique({
         where: { email: userEmail },
       });
+
     case "company":
       return await prisma.company.findUnique({
         where: { email: userEmail },
@@ -39,6 +43,7 @@ export const findUserByEmail = async (userRole: string, userEmail: string) => {
         where: { email: userEmail },
       });
       return developer || company;
+
     default:
       return {
         user: null,
@@ -48,25 +53,55 @@ export const findUserByEmail = async (userRole: string, userEmail: string) => {
   }
 };
 
+export const fetchUserIdByUsername = async (userUsername: string) => {
+  const developer = await prisma.developer.findUnique({
+    where: { username: userUsername },
+    select: {
+      id: true,
+    },
+  });
+
+  const company = await prisma.company.findUnique({
+    where: { username: userUsername },
+    select: {
+      id: true,
+    },
+  });
+
+  return { developer, company };
+};
+
+export const fetchUserByUsername = async (userUsername: string) => {
+  const developer = await prisma.developer.findUnique({
+    where: { username: userUsername },
+  });
+
+  const company = await prisma.company.findUnique({
+    where: { username: userUsername },
+  });
+
+  return { developer, company };
+};
+
 export const findUserByUsername = async (
   userRole: string,
-  userPassword: string
+  userUsername: string
 ) => {
   switch (userRole) {
     case "developer":
       return await prisma.developer.findUnique({
-        where: { username: userPassword },
+        where: { username: userUsername },
       });
     case "company":
       return await prisma.company.findUnique({
-        where: { username: userPassword },
+        where: { username: userUsername },
       });
     case "both":
       const developer = await prisma.developer.findUnique({
-        where: { username: userPassword },
+        where: { username: userUsername },
       });
       const company = await prisma.company.findUnique({
-        where: { username: userPassword },
+        where: { username: userUsername },
       });
       return developer || company;
     default:

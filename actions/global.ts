@@ -2,25 +2,25 @@
 
 import prisma from "@/lib/prisma";
 
-export async function GetAllRecords() {
-  try {
-    const locations = await prisma.location.findMany();
-    const industries = await prisma.industry.findMany();
-    const positions = await prisma.position.findMany();
-    const salaries = await prisma.salary.findMany();
+// export async function GetAllRecords() {
+//   try {
+//     const locations = await prisma.location.findMany();
+//     const industries = await prisma.industry.findMany();
+//     const positions = await prisma.position.findMany();
+//     const salaries = await prisma.salary.findMany();
 
-    const data = {
-      locations,
-      industries,
-      positions,
-      salaries,
-    };
+//     const data = {
+//       locations,
+//       industries,
+//       positions,
+//       salaries,
+//     };
 
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 export async function GetLocations() {
   try {
