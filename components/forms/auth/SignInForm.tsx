@@ -104,7 +104,7 @@ const SignInForm = () => {
         </div>
         <div className="flex items-center gap-2 justify-center">
           <p className="font-light text-sm text-muted-foreground">
-            Don't have an account?
+            {"Don't have an account?"}
           </p>
           <Link href={"/sign-up"} className="text-sm">
             Sign up

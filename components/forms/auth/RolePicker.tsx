@@ -29,12 +29,12 @@ export default function RolePicker() {
       <fieldset className="flex gap-6">
         <button onClick={() => handleSignUpRole("employer")}>
           <FaPersonChalkboard />
-          <h4>I'm an employer, hiring a developer</h4>
+          <h4>{"I'm an employer, hiring a developer"}</h4>
         </button>
 
         <button onClick={() => handleSignUpRole("developer")}>
           <BsPersonWorkspace />
-          <h4>I'm a developer, looking for a job</h4>
+          <h4>{"I'm a developer, looking for a job"}</h4>
         </button>
       </fieldset>
     </div>

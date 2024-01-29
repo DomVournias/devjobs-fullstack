@@ -135,7 +135,7 @@ const SignUpForm = () => {
                         <FormLabel className="font-normal p-6 m-0 cursor-pointer flex flex-col">
                           <FaPersonChalkboard className="text-2xl" />
                           <h4 className="pt-4 text-xl">
-                            I'm an company, hiring a developer
+                            {"I'm an company, hiring a developer"}
                           </h4>
                         </FormLabel>
                       </FormItem>
@@ -153,7 +153,7 @@ const SignUpForm = () => {
                         <FormLabel className="font-normal p-6 m-0 cursor-pointer flex flex-col">
                           <BsPersonWorkspace className="text-2xl" />
                           <h4 className="pt-4 text-xl">
-                            I'm a developer, looking for a job
+                            {"I'm a developer, looking for a job"}
                           </h4>
                         </FormLabel>
                       </FormItem>
