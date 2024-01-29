@@ -29,6 +29,20 @@ const CompanyProfileSidebar = async ({ id }: CompanyProfileSidebarProps) => {
             {data.tagline}
           </p>
         )}
+        <div className="flex">
+          <div className="pr-3 text-sm">
+            <span className="inline pr-1 font-semibold ">3</span>
+            <p className="inline">jobs</p>
+          </div>
+          <div className="pr-3 text-sm">
+            <span className="inline pr-1 font-semibold">25</span>
+            <p className="inline">followers</p>
+          </div>
+          <div className="text-sm">
+            <span className="inline pr-1 font-semibold">320</span>
+            <p className="inline">following</p>
+          </div>
+        </div>
       </div>
       <div className="flex gap-3">
         {data.twitter && (
