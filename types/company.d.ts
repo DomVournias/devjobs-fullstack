@@ -49,14 +49,17 @@ export type ProfileSidebarTypes = Prisma.CompanyGetPayload<{
   };
 }>;
 
-export type LimitedProfileJobs = Prisma.CompanyGetPayload<{
+export type LimitedProfileJobsTypes = Prisma.CompanyGetPayload<{
   select: {
     jobs: {
       select: {
+        id: true;
         title: true;
+        remote: true;
         location: true;
         minSalary: true;
         maxSalary: true;
+        rate: true;
       };
       orderBy: {
         createdAt: "desc";
